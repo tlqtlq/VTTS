@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Looping TTS Player</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: #f6f8fa;
+            color: #24292f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(140,149,159,0.15);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #57606a;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .btn {
+            background-color: #2da44e;
+            color: #ffffff;
+            border: 1px solid rgba(27,31,36,0.15);
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            width: 80%;
+        }
+        .btn:hover {
+            background-color: #2c974b;
+        }
+        .btn:active {
+            background-color: #298e46;
+        }
+        .btn.playing {
+            background-color: #cf222e;
+        }
+        .btn.playing:hover {
+            background-color: #b60215;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Vocabulary Loop Player</h1>
+    <p>Click the button below to start the continuous, fast-paced audio review loop of your vocabulary terms.</p>
+    <button id="ttsButton" class="btn">Start Playback</button>
+</div>
+
+<script>
+    const textToSpeak = `
+        Abstract - based on ideas or theories rather than physical objects or concrete facts. 
+        Abstruse - difficult to understand; obscure. 
+        Accentuate - to emphasize or make something more noticeable. 
+        Adamantine - unbreakable. 
+        Adroit - skilled, clever, or highly capable–especially in handling situations or using one’s hands or mind. 
+        Alacrity - brisk and cheerful readiness. 
+        Ambiguous - having more than one possible meaning or being unclear or uncertain. 
+        Anathema - something or someone greatly disliked or cursed. 
+        Arbitrary - based on random choice not reason or rule. 
+        Arcane - known or understood by only a few; mysterious or secret. 
+        Arduous - hard because it’s challenging. 
+        Ascertain - to find out and make sure of. 
+        Assiduous - extremely hard-working and persistent. 
+        Assimilate - to absorb or fully understand something. 
+        Assuage - make an unpleasant feeling less intense. 
+        Astute - having or showing an ability to accurately assess situations or people and turn this to one's advantage. 
+        Audacious - showing a willingness to take surprisingly bold risks. 
+        Bamboozle - to trick, deceive, or confuse someone. 
+        Banal - something that is so ordinary, predictable, or unoriginal that it is boring and ineffective. 
+        Belligerent - hostile, aggressive, and ready to fight. 
+        Benevolent - kind, well-meaning. 
+        Benign - favorable, not threatening, mild. 
+        Berate - scold or criticize someone angrily. 
+        Bloviate - to speak at length in a pompous or boastful way. 
+        Bolster - to support or strengthen. 
+        Bucolic - relating to the pleasant aspects of the countryside and country life. 
+        Castigate - to reprimand or criticize someone severely. 
+        Charlatan - a person falsely claiming to have a special knowledge or skill; a fraud. 
+        Chronological - arranged in order of time. 
+        Clique - a small group of people, with shared interests or other features in common, who spend time together and do not readily allow others to join them. 
+        Coax - gently and persistently persuade someone to do something. 
+        Cognizant - aware or informed. 
+        Colloquial - used in ordinary or familiar conversation; not formal or literary. 
+        Collude - to secretly cooperate or plot with others, typically to achieve a deceitful, illegal, or dishonest purpose. 
+        Commendation - a notice of approval or recognition. 
+        Compunctious - feeling guilty, remorseful, or uneasy about something you have done or failed to do. 
+        Conspicuous - standing out so as to be clearly visible. 
+        Conventional - following traditional, usual, or widely accepted ways of doing things. 
+        Corroborate - confirm or give support to a statement, theory, or finding. 
+        Cozen - trick or deceive. 
+        Cryptid - animals or creatures whose existence is rumored or claimed but not recognized by mainstream science. 
+        Culminate - to reach a high point, climax, or final stage of a process. 
+        Cupidity - greed for money or possessions. 
+        Cynosure - the main thing or person that attracts attention. 
+        Dearth - a lack, scarcity. 
+        Delegate - to entrust a task, duty, or authority to someone else. 
+        Depravity - wickedness. 
+        Derogatory - showing a lack of respect or a low opinion of someone or something. 
+        Deter - to discourage or prevent. 
+        Diligent - showing steady and earnest care and effort in one's work. 
+        Discern - perceive or recognize something. 
+        Divulge - to reveal something secret. 
+        Dogmatic - being stubbornly confident in your beliefs or opinions, refusing to consider other viewpoints. 
+        Dolorous - feeling or expressing great sorrow or distress. 
+        Draconian - of laws or their application, excessively harsh and severe. 
+        Egregious - shockingly bad. 
+        Eloquent - well-spoken, persuasive. 
+        Embellish - make something more attractive by the addition of decorative details or features. 
+        Embezzle - steal. 
+        Empirical - based on observation or experience. 
+        Enigmatic - mysterious and difficult to understand. 
+        Ephemeral - lasting for a very short time. 
+        Epistemic - of or relating to knowledge or knowing; cognition. 
+        Epitome - a perfect example, embodiment. 
+        Esoteric - understood by only a small, specialized group. 
+        Ethereal - extremely delicate and light in a way that seems too perfect for this world. 
+        Exacerbate - make a problem, bad situation, or negative feeling worse. 
+        Exonerate - especially of an official body, absolve someone from blame for a fault or wrongdoing, especially after due consideration of the case. 
+        Explicit - stated clearly and directly, leaving no room for confusion or doubt. 
+        Fanatic - any extreme, overhyped individual. 
+        Fastidious - very attentive to and concerned about accuracy and detail. 
+        Fatuous - silly and pointless. 
+        Flaunt - to flex to attract attention or admiration. 
+        Fidelity - faithfulness, loyalty, or devotion to a person, cause, or belief. 
+        Frivolous - silly, trivial, or unnecessary. 
+        Fulminate - to complain loudly or angrily. 
+        Garrulous - excessively talkative. 
+        Grandiloquent - using fancy, overblown language. 
+        Gratify - to please or satisfy. 
+        Gregarious - sociable; enjoys company. 
+        Harangue - a long, loud, and aggressive speech or verbal attack, typically delivered to a public assembly or someone who has angered the speaker. 
+        Hinder - to create difficulties for someone, resulting in delay or obstruction. 
+        Hubristic - excessively proud or arrogant; overconfident in a way that can lead to downfall. 
+        Hypochondriac - a person who is insanely worried about having a serious illness, often imagining symptoms that aren’t real. 
+        Hypocrite - a person who pretends to have beliefs, virtues, or feelings that they do not actually possess. 
+        Iconoclast - someone who challenges traditional beliefs. 
+        Idiosyncrasy - a mode of behavior or way of thought peculiar to an individual. 
+        Illicit - forbidden, not permitted. 
+        Immaculate - perfectly clean, neat, or tidy. 
+        Immutable - something that is unchangeable, permanent, or unable to be modified or altered. 
+        Impede - to delay, obstruct, or make progress more difficult. 
+        Implicit - suggested or hinted at without being plainly or directly stated. 
+        Inane - silly or pointless. 
+        Indifferent - having no particular interest or sympathy; unconcerned. 
+        Inept - lacking skill or ability; clumsy or awkward. 
+        Inexorable - impossible to stop or persuade. 
+        Innocuous - harmless, inoffensive. 
+        Irreconcilable - impossible to bring into agreement, harmony, or resolution. 
+        Jejune - shallow, simplistic, and lacking real substance or maturity. 
+        Judicious - showing good judgment. 
+        Juxtapose - to place two things side-by-side to highlight their differences. 
+        Laconic - super brief. 
+        Lethargic - sluggish; lacking energy. 
+        Loquacious - tending to talk a great deal; talkative. 
+        Macabre - disturbing and horrifying because of involvement with or depiction of death and injury. 
+        Magnanimous - very generous or forgiving, especially toward a rival or someone less powerful. 
+        Mendacious - lying or dishonest. 
+        Meretricious - appearing flashy or attractive on the surface but actually cheap or lacking real value. 
+        Meticulous - showing great attention to detail; very careful and precise. 
+        Monotonous - dull, tedious, and repetitious; lacking in variety and interest. 
+        Mundane - dull or lacking interest ordinarily. 
+        Myopic - lacking imagination, foresight, or intellectual insight; nearsighted. 
+        Nadir - the worst or lowest point of something. 
+        Narcissist - a person who has an excessive interest in or admiration of themselves; often self-centered and lacking empathy. 
+        Nefarious - wicked, criminal, or extremely impious. 
+        Neglect - fail to care for properly. 
+        Nominalization - turning a word, usually a verb or adjective, into a noun. For example: happy becomes happiness, logical becomes logicality. 
+        Nuance - a slight variation in meaning, tone, expression. 
+        Obdurate - stubbornly refusing to change one's opinion or course of action. 
+        Obfuscate - to make something confusing, unclear, or hard to understand. 
+        Oblique - not expressed in a straight, direct, or clear way; indirect, vague, or subtly stated. 
+        Oblivious - not aware of or not concerned about what is happening around you. 
+        Obsequious - someone who is excessively eager to help, obey, or flatter, usually to gain favor from a superior or influential person. 
+        Omen - a sign or event believed to predict the future. 
+        Opulent - very rich, luxurious, and extravagant. 
+        Ostentatious - designed to impress or attract notice; showy. 
+        Ostracize - to exclude someone from a group, society, or community. 
+        Paramount - more important than anything else; supreme. 
+        Phlegmatic - of a person, having an unemotional and stolidly calm disposition. 
+        Plaintiff - the person or party who starts a lawsuit in a civil case. 
+        Pompous - excessively self-important in speech or manner; characterized by inflated, pretentious, or grandiose behavior meant to impress others. 
+        Premonition - a strong feeling that something is about to happen, especially something unpleasant. 
+        Pristine - in original condition. 
+        Puerile - childish, immature, or silly. 
+        Punctilious - showing great attention to detail or correct behavior. 
+        Querulous - constantly complaining. 
+        Quibble - a slight objection or criticism about a trivial matter. 
+        Quip - a clever usually taunting remark. 
+        Quixotic - super unrealistic and impractical. 
+        Rancid - having a strong unpleasant smell or taste. 
+        Rectify - to correct. 
+        Repugnant - extremely offensive or unacceptable. 
+        Retrospect - the act of thinking about or reviewing past events or situations, often with a new perspective or understanding. 
+        Rhetorical - language used to persuade, influence, or impress, often focusing on style rather than substance. 
+        Rue - regret. 
+        Rumination - deep, repetitive thinking over something. 
+        Rustic - rural. 
+        Salient - most important, or prominent; standing out clearly. 
+        Salubrious - health-giving; healthy. 
+        Savvy - smart or clever. 
+        Stigmatize - to mark someone or something with disgrace, shame or a negative label. 
+        Superfluous - unnecessary or unimportant. 
+        Surmise - to think or infer an opinion based on incomplete or uncertain evidence. 
+        Synthesize - to combine different ideas or things into a single, new whole. 
+        Taciturn - reserved or uncommunicative in speech; saying very little. 
+        Threnody - a song, poem, or piece of writing expressing grief, lamentation, or mourning, especially for someone who has died. 
+        Toilsome - hard because it’s draining and monotonous. 
+        Trepidation - fear or anxiety about something. 
+        Ubiquitous - seen almost anywhere you go. 
+        Umbrage - offense or annoyance. 
+        Unprecedented - never done or known before. 
+        Vague - of uncertain, indefinite, or unclear character or meaning. 
+        Valetudinarian - Hypochondriac. 
+        Vehement - showing strong feelings or emotions. 
+        Venerate - to regard with great respect or admiration. 
+        Verbosity - quality of using more words than necessary, often resulting in wordy, redundant, or long-winded speech and writing. 
+        Vilify - to speak badly about someone, making them seem evil or much worse than they really are. 
+        Vindicate - to prove that someone or something was right, justified, or not guilty. 
+        Vitriolic - harsh, bitter, and aggressive in tone. 
+        Zealot - a fanatic devoted to a rigid belief, often aggressively. 
+        Zealous - having or showing great energy or enthusiasm for a cause.
+    `;
+
+    const button = document.getElementById('ttsButton');
+    let isPlaying = false;
+    let currentUtterance = null;
+
+    function speakList() {
+        if (!isPlaying) return;
+
+        currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+        currentUtterance.rate = 1.4; // Paced to be fast but legible
+        
+        currentUtterance.onend = function() {
+            if (isPlaying) {
+                speakList();
+            }
+        };
+
+        window.speechSynthesis.speak(currentUtterance);
+    }
+
+    button.addEventListener('click', () => {
+        if (!isPlaying) {
+            isPlaying = true;
+            button.textContent = "Stop Playback";
+            button.classList.add('playing');
+            speakList();
+        } else {
+            isPlaying = false;
+            button.textContent = "Start Playback";
+            button.classList.remove('playing');
+            window.speechSynthesis.cancel();
+        }
+    });
+
+    window.addEventListener('beforeunload', () => {
+        window.speechSynthesis.cancel();
+    });
+</script>
+
+</body>
+</html>
